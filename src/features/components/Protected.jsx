@@ -2,7 +2,7 @@ import React from 'react'
 import { Navigate } from 'react-router-dom'
 
 function Protected({children}) {
-    const user = localStorage.getItem("token");
+    const user = localStorage.getItem("userId");
 
 
     if(user){
