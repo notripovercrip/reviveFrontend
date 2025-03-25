@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { fetchDemoDataAPI, postDemoDataAPI } from './demoAPI';
+import { fetchDemoDataAPI, postDemoDataAPI } from './demoApi';
 
 const initialState = {
   data: [],

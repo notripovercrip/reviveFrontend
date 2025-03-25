@@ -1,39 +1,75 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
 
+  useEffect(() => {
+    // route to check if the userId is valid or not
+    const userId = localStorage.getItem("userId");
+    const fetchuser = async () => {
+      try {
+        const response = await fetch(`${BACKEND_URL}/api/auth/${userId}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        const data = await response.json();
+        if (!response.ok) {
+          localStorage.removeItem("userId");
+          window.location.href = "/";
+        }
+      } catch (err) {
+        console.error("Error fetching user data:", err);
+      }
+    };
+    fetchuser();
+  }, []);
+
   return (
-    <nav className="bg-[#121212] text-[#E0E0E0] p-4 shadow-md">
+    <nav className="bg-[#0d1117] text-cyan-100 p-4 border-b border-cyan-600 shadow-lg z-50">
       <div className="container mx-auto flex justify-between items-center">
-        {/* Logo */}
-        <Link to="/" className="text-2xl font-bold text-[#BB86FC]">
-          AlzheimerCare
+        {/* Logo / Title */}
+        <Link to="/" className="text-2xl font-bold text-cyan-300 tracking-wide">
+          Revive Admin
         </Link>
 
-        {/* Desktop Links */}
-        <div className="hidden md:flex gap-6">
-          <NavLink to="/" label="Home" />
-          <NavLink to="/blogs" label="Blogs" />
-          <NavLink to="/hospitals" label="Hospitals" />
-          <NavLink to="/detect" label="Detection" />
+        {/* Desktop Nav Links */}
+        <div className="hidden md:flex gap-6 text-cyan-100">
+          <NavLink to="/records" label="Records" />
+          <NavLink to="/entries" label="Entries" />
+          <NavLink to="/scanner" label="Scanner" />
         </div>
 
         {/* Mobile Menu Button */}
-        <button className="md:hidden" onClick={() => setMenuOpen(!menuOpen)}>
+        <button
+          className="md:hidden text-cyan-200"
+          onClick={() => setMenuOpen(!menuOpen)}
+        >
           {menuOpen ? <X size={28} /> : <Menu size={28} />}
         </button>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Dropdown Menu */}
       {menuOpen && (
-        <div className="md:hidden flex flex-col mt-3 space-y-2 bg-[#1E1E1E] p-4 rounded-lg">
-          <NavLink to="/" label="Home" onClick={() => setMenuOpen(false)} />
-          <NavLink to="/blogs" label="Blogs" onClick={() => setMenuOpen(false)} />
-          <NavLink to="/hospitals" label="Hospitals" onClick={() => setMenuOpen(false)} />
-          <NavLink to="/detect" label="Detection" onClick={() => setMenuOpen(false)} />
+        <div className="md:hidden mt-3 space-y-2 bg-[#0b0f1a] p-4 rounded-lg shadow-md">
+          <NavLink
+            to="/records"
+            label="Records"
+            onClick={() => setMenuOpen(false)}
+          />
+          <NavLink
+            to="/entries"
+            label="Entries"
+            onClick={() => setMenuOpen(false)}
+          />
+          <NavLink
+            to="/scanner"
+            label="Scanner"
+            onClick={() => setMenuOpen(false)}
+          />
         </div>
       )}
     </nav>
@@ -46,7 +82,7 @@ function NavLink({ to, label, onClick }) {
     <Link
       to={to}
       onClick={onClick}
-      className="block md:inline-block px-3 py-2 rounded-lg text-[#E0E0E0] hover:bg-[#BB86FC] hover:text-[#121212] transition"
+      className="block md:inline-block px-4 py-2 rounded-md hover:bg-cyan-600 hover:text-black transition duration-200 font-medium"
     >
       {label}
     </Link>
