@@ -1,23 +1,23 @@
-import { useState } from 'react';
+import { useState } from "react";
 
 const Events = () => {
-  const [activeTab, setActiveTab] = useState('concerts');
+  const [activeTab, setActiveTab] = useState("concerts");
 
   const events = {
     concerts: [
-      { id: 1, title: 'Rock Night', image: '[Concert Image 1]' },
-      { id: 2, title: 'Jazz Evening', image: '[Concert Image 2]' },
-      { id: 3, title: 'Pop Fest', image: '[Concert Image 3]' },
+      { id: 1, title: "Rock Night", image: "/concert2.jpg" },
+      { id: 2, title: "Jazz Evening", image: "/concert1.jpeg" },
+      { id: 3, title: "Pop Fest", image: "/concert3.jpeg" },
     ],
     standup: [
-      { id: 1, title: 'Comedy Blast', image: '[Standup Image 1]' },
-      { id: 2, title: 'Laugh Riot', image: '[Standup Image 2]' },
-      { id: 3, title: 'Joke Jam', image: '[Standup Image 3]' },
+      { id: 1, title: "Comedy Blast", image: "/standup4.jpeg" },
+      { id: 2, title: "Laugh Riot", image: "/standup2.jpeg" },
+      { id: 3, title: "Joke Jam", image: "/standup3.jpeg" },
     ],
     sports: [
-      { id: 1, title: 'Football Frenzy', image: '[Sports Image 1]' },
-      { id: 2, title: 'Basketball Bash', image: '[Sports Image 2]' },
-      { id: 3, title: 'Cricket Clash', image: '[Sports Image 3]' },
+      { id: 1, title: "Football Frenzy", image: "/sports1.jpeg" },
+      { id: 2, title: "Basketball Bash", image: "/sports2.jpeg" },
+      { id: 3, title: "Cricket Clash", image: "/sports3.jpeg" },
     ],
   };
 
@@ -27,13 +27,13 @@ const Events = () => {
         Our Events
       </h2>
       <div className="flex justify-center mt-8 space-x-1.5 px-4">
-        {['concerts', 'standup', 'sports'].map((tab) => (
+        {["concerts", "standup", "sports"].map((tab) => (
           <button
             key={tab}
             className={`px-6 py-3 rounded-full font-bold text-sm uppercase tracking-wide transition-all duration-300 shadow-lg ${
               activeTab === tab
-                ? 'bg-yellow-400 text-black'
-                : 'bg-gradient-to-r from-cyan-400 to-purple-400 text-black hover:from-purple-400 hover:to-cyan-400 animate-gradient'
+                ? "bg-yellow-400 text-black"
+                : "bg-gradient-to-r from-cyan-400 to-purple-400 text-black hover:from-purple-400 hover:to-cyan-400 animate-gradient"
             }`}
             onClick={() => setActiveTab(tab)}
           >
@@ -49,7 +49,11 @@ const Events = () => {
               key={event.id}
               className="w-80 h-52 bg-[#0b0f1a] border-2 border-cyan-400 rounded-xl flex items-center justify-center snap-center shrink-0 animate-border-pulse"
             >
-              <p className="text-purple-300 text-lg font-semibold">{event.image}</p>
+              <img
+                src={event.image}
+                alt={event.title}
+                className="w-full h-full object-cover rounded-xl"
+              />
             </div>
           ))}
         </div>
@@ -60,7 +64,11 @@ const Events = () => {
               key={event.id}
               className="w-96 h-64 bg-[#0b0f1a] border-2 border-cyan-400 rounded-xl flex items-center justify-center transform hover:scale-105 transition-transform duration-300 animate-border-pulse"
             >
-              <p className="text-purple-300 text-lg font-semibold">{event.image}</p>
+              <img
+                src={event.image}
+                alt={event.title}
+                className="w-full h-full object-cover rounded-xl"
+              />
             </div>
           ))}
         </div>
@@ -86,7 +94,8 @@ const Events = () => {
         }
 
         @keyframes borderPulse {
-          0%, 100% {
+          0%,
+          100% {
             border-color: #22d3ee; /* Cyan-400 */
           }
           50% {

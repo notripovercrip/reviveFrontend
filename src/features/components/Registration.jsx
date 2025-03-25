@@ -7,8 +7,9 @@ export default function RegistrationForm() {
     name: "",
     phone: "",
     email: "",
-    fromTerna: "yes",
+    fromTerna: "Terna Student",
     idNumber: "",
+    idFile: null,
   });
   const [modal, setModal] = useState({
     show: false,
@@ -42,39 +43,50 @@ export default function RegistrationForm() {
       newErrors.idNumber = "ID / Aadhar Number is required.";
     }
 
+    if (!formData.idFile) {
+      newErrors.idFile = "ID / Aadhar Card is required.";
+    }
+
     return newErrors;
   };
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-    setErrors({ ...errors, [e.target.name]: "" });
+    if (e.target.name === "idFile") {
+      const file = e.target.files[0];
+      if (file) {
+        if (file.size > 1024 * 1024) {
+          setErrors((prev) => ({
+            ...prev,
+            idFile: "File size must be less than 1MB",
+          }));
+          return;
+        }
+        setErrors((prev) => ({ ...prev, idFile: "" })); // Clear error when valid
+        setFormData((prev) => ({ ...prev, idFile: file }));
+      }
+    } else {
+      setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+      setErrors((prev) => ({ ...prev, [e.target.name]: "" })); // Clear error on input change
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Validate inputs here if needed (in addition to field validation)
+    console.log("first")
     const validationErrors = validate();
-    if (Object.keys(validationErrors).length === 0) {
-      console.log("Form Submitted:", formData);
-      setFormData({
-        name: "",
-        phone: "",
-        email: "",
-        fromTerna: "yes",
-        idNumber: "",
-      });
-    } else {
-      setErrors(validationErrors);
-    }
 
     try {
+      const formDataObj = new FormData();
+      formDataObj.append("name", formData.name);
+      formDataObj.append("phone", formData.phone);
+      formDataObj.append("email", formData.email);
+      formDataObj.append("fromTerna", formData.fromTerna);
+      formDataObj.append("idNumber", formData.idNumber);
+      formDataObj.append("idFile", formData.idFile);
+
       const response = await fetch(`${BACKEND_URL}/api/register`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
+        body: formDataObj,
       });
 
       const data = await response.json();
@@ -84,6 +96,14 @@ export default function RegistrationForm() {
           show: true,
           message: "Registration successful! Check your email for the QR code.",
           success: true,
+        });
+        setFormData({
+          name: "",
+          phone: "",
+          email: "",
+          userType: "Terna Student",
+          idNumber: "",
+          idFile: null,
         });
       } else {
         setModal({
@@ -144,13 +164,11 @@ export default function RegistrationForm() {
 
       {/* Form Container */}
       <div className="relative z-20 w-full max-w-lg p-[3px] rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 animate-gradient shadow-2xl">
-        {/* Inner Form Container */}
         <div className="bg-[#0d1117] bg-opacity-90 p-8 rounded-[1rem]">
           <h2 className="text-3xl font-extrabold text-cyan-300 text-center mb-6 tracking-wide">
             Revive Registration
           </h2>
           <form onSubmit={handleSubmit} className="space-y-4 text-cyan-100">
-            {/* Name */}
             <div>
               <label className="block text-sm font-semibold">Name</label>
               <input
@@ -158,15 +176,14 @@ export default function RegistrationForm() {
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                className="mt-1 w-full p-2 bg-[#0b0f1a] text-cyan-200 border border-cyan-500 rounded focus:ring-purple-500 focus:border-purple-500"
                 required
+                className="mt-1 w-full p-2 bg-[#0b0f1a] border border-cyan-500 rounded"
               />
               {errors.name && (
                 <p className="text-pink-400 text-sm">{errors.name}</p>
               )}
             </div>
 
-            {/* Phone */}
             <div>
               <label className="block text-sm font-semibold">
                 Phone Number
@@ -176,68 +193,66 @@ export default function RegistrationForm() {
                 name="phone"
                 value={formData.phone}
                 onChange={handleChange}
-                className="mt-1 w-full p-2 bg-[#0b0f1a] text-cyan-200 border border-cyan-500 rounded focus:ring-purple-500 focus:border-purple-500"
                 required
+                className="mt-1 w-full p-2 bg-[#0b0f1a] border border-cyan-500 rounded"
               />
               {errors.phone && (
                 <p className="text-pink-400 text-sm">{errors.phone}</p>
               )}
             </div>
 
-            {/* Email */}
             <div>
-              <label className="block text-sm font-semibold">Email</label>
+              <label className="block text-sm font-semibold">Email </label>
               <input
                 type="email"
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                className="mt-1 w-full p-2 bg-[#0b0f1a] text-cyan-200 border border-cyan-500 rounded focus:ring-purple-500 focus:border-purple-500"
                 required
+                className="mt-1 w-full p-2 bg-[#0b0f1a] border border-cyan-500 rounded"
               />
               {errors.email && (
                 <p className="text-pink-400 text-sm">{errors.email}</p>
               )}
             </div>
 
-            {/* From Terna */}
             <div>
-              <label className="block text-sm font-semibold">
-                Are you from Terna?
-              </label>
+              <label className="block text-sm font-semibold">You are?</label>
               <select
-                name="fromTerna"
-                value={formData.fromTerna}
+                name="userType"
+                value={formData.userType}
                 onChange={handleChange}
-                className="mt-1 w-full p-2 bg-[#0b0f1a] text-cyan-200 border border-cyan-500 rounded"
+                className="mt-1 w-full p-2 bg-[#0b0f1a] border border-cyan-500 rounded"
               >
-                <option value="yes">Yes</option>
-                <option value="no">No</option>
+                <option>Terna Student</option>
+                <option>Terna Passout</option>
+                <option>Faculty</option>
+                <option>Outsider</option>
               </select>
             </div>
 
-            {/* ID / Aadhar */}
             <div>
               <label className="block text-sm font-semibold">
-                ID / Aadhar Number
+                Upload ID / Aadhar (Max 1MB)
               </label>
               <input
-                type="text"
-                name="idNumber"
-                value={formData.idNumber}
+                type="file"
+                name="idFile"
                 onChange={handleChange}
-                className="mt-1 w-full p-2 bg-[#0b0f1a] text-cyan-200 border border-cyan-500 rounded focus:ring-purple-500 focus:border-purple-500"
-                required
+                accept=".jpg,.jpeg,.png,.pdf"
+                className="mt-1 w-full p-2 bg-[#0b0f1a] border border-cyan-500 rounded"
               />
-              {errors.idNumber && (
-                <p className="text-pink-400 text-sm">{errors.idNumber}</p>
+              {formData.idFile && (
+                <p className="text-sm text-cyan-300">{formData.idFile.name}</p>
+              )}
+              {errors.idFile && (
+                <p className="text-pink-400 text-sm">{errors.idFile}</p>
               )}
             </div>
 
-            {/* Submit */}
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 text-black font-bold py-2 px-4 rounded mt-4 transition-all duration-300 shadow-lg animate-gradient"
+              className="w-full bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 text-black font-bold py-2 rounded"
             >
               Register
             </button>

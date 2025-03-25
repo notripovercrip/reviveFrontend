@@ -44,10 +44,7 @@
           Discover Our Story
         </h2>
         <p className="mt-6 text-xl text-cyan-200 px-8 max-w-3xl mx-auto leading-relaxed">
-          Revive, a dynamic student-led initiative under Terna Public Charitable Trust, 
-          ignites campuses with unforgettable experiences—think electrifying concerts, 
-          laugh-out-loud comedy nights, and heart-racing sports showdowns. 
-          We’re here to spark joy and create memories that last a lifetime.
+        Revive, a dynamic student-led initiative under the esteemed Terna Public Charitable Trust, is dedicated to enriching campus life through exceptional events and experiences. From electrifying concerts and captivating comedy nights to thrilling sports competitions, we create moments that inspire, unite, and leave a lasting impact. Our mission is to foster a vibrant community where students can connect, celebrate, and make unforgettable memories.
         </p>
         <div className="flex justify-center gap-6 md:gap-12 mt-12 px-2">
           <div className="p-6 bg-[#0b0f1a] border-2 border-purple-400 rounded-xl text-center transform hover:scale-105 transition-transform duration-300">
