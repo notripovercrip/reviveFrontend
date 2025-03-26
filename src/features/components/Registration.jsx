@@ -70,57 +70,77 @@ export default function RegistrationForm() {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    console.log("first")
-    const validationErrors = validate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-    try {
-      const formDataObj = new FormData();
-      formDataObj.append("name", formData.name);
-      formDataObj.append("phone", formData.phone);
-      formDataObj.append("email", formData.email);
-      formDataObj.append("fromTerna", formData.fromTerna);
-      formDataObj.append("idNumber", formData.idNumber);
-      formDataObj.append("idFile", formData.idFile);
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  
+  if (isSubmitting) {
+    setModal({
+      show: true,
+      message: "Please wait 10 seconds before submitting again.",
+      success: false,
+    });
+    return;
+  }
 
-      const response = await fetch(`${BACKEND_URL}/api/register`, {
-        method: "POST",
-        body: formDataObj,
-      });
+  const validationErrors = validate();
+  if (Object.keys(validationErrors).length > 0) {
+    setErrors(validationErrors);
+    return;
+  }
 
-      const data = await response.json();
+  setIsSubmitting(true);
 
-      if (response.ok) {
-        setModal({
-          show: true,
-          message: "Registration successful! Check your email for the QR code.",
-          success: true,
-        });
-        setFormData({
-          name: "",
-          phone: "",
-          email: "",
-          userType: "Terna Student",
-          idNumber: "",
-          idFile: null,
-        });
-      } else {
-        setModal({
-          show: true,
-          message: data.message || "Registration failed.",
-          success: false,
-        });
-      }
-    } catch (err) {
-      console.error("Error submitting form", err);
+  try {
+    const formDataObj = new FormData();
+    formDataObj.append("name", formData.name);
+    formDataObj.append("phone", formData.phone);
+    formDataObj.append("email", formData.email);
+    formDataObj.append("fromTerna", formData.fromTerna);
+    formDataObj.append("idNumber", formData.idNumber);
+    formDataObj.append("idFile", formData.idFile);
+
+    const response = await fetch(`${BACKEND_URL}/api/register`, {
+      method: "POST",
+      body: formDataObj,
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
       setModal({
         show: true,
-        message: "Something went wrong. Please try again later.",
+        message: "Registration successful! Check your email for the QR code.",
+        success: true,
+      });
+      setFormData({
+        name: "",
+        phone: "",
+        email: "",
+        fromTerna: "Terna Student",
+        idNumber: "",
+        idFile: null,
+      });
+    } else {
+      setModal({
+        show: true,
+        message: `Registration failed: ${data.message || "Unknown server error."}\n\nPlease check:\n- Name: Only letters & spaces\n- Phone: 10-digit number\n- Email: Valid email format\n- ID Number: Required\n- ID File: Max 1MB (JPG, PNG, PDF)`,
         success: false,
       });
     }
-  };
+  } catch (err) {
+    setModal({
+      show: true,
+      message: `Something went wrong. Server Error: ${err.message || "Unknown error"}`,
+      success: false,
+    });
+  }
+
+  setTimeout(() => {
+    setIsSubmitting(false);
+  }, 10000);
+};
 
   return (
     <div className="relative min-h-screen overflow-hidden flex items-center justify-center text-white px-3">
