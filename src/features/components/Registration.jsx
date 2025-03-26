@@ -107,7 +107,7 @@ const handleSubmit = async (e) => {
     if (response.ok) {
       setModal({
         show: true,
-        message: "Registration successful! Check your email for the QR code.",
+        message: "Registration successful! We will be sending in Your QR's shortly.",
         success: true,
       });
       setFormData({
