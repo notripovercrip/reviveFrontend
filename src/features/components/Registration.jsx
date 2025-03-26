@@ -84,11 +84,7 @@ const handleSubmit = async (e) => {
     return;
   }
 
-  const validationErrors = validate();
-  if (Object.keys(validationErrors).length > 0) {
-    setErrors(validationErrors);
-    return;
-  }
+  const validationErrors = validate()
 
   setIsSubmitting(true);
 
