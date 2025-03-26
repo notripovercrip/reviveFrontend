@@ -5,8 +5,8 @@
     const [attendeeCount, setAttendeeCount] = useState(0);
 
     useEffect(() => {
-      const eventTarget = 35; // Increased from 30+
-      const attendeeTarget = 600; // Increased from 5000+
+      const eventTarget = 70; // Increased from 30+
+      const attendeeTarget = 15000; // Increased from 5000+
       const duration = 2000; // Animation duration in milliseconds
 
       const eventIncrement = eventTarget / (duration / 50);
