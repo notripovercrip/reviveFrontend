@@ -235,16 +235,17 @@ const handleSubmit = async (e) => {
             <div>
               <label className="block text-sm font-semibold">You are?</label>
               <select
-                name="userType"
-                value={formData.userType}
+                name="fromTerna"
+                value={formData.fromTerna}
                 onChange={handleChange}
                 className="mt-1 w-full p-2 bg-[#0b0f1a] border border-cyan-500 rounded"
-              >
-                <option>Terna Student</option>
-                <option>Terna Passout</option>
-                <option>Faculty</option>
-                <option>Outsider</option>
+                >
+                <option value="Terna Student">Terna Student</option>
+                <option value="Terna Passout">Terna Passout</option>
+                <option value="Faculty">Faculty</option>
+                <option value="Outsider">Outsider</option>
               </select>
+              
             </div>
 
             <div>
