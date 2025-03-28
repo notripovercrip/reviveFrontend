@@ -107,7 +107,7 @@ const handleSubmit = async (e) => {
     if (response.ok) {
       setModal({
         show: true,
-        message: "Registration successful! We will be sending in Your QR's shortly.",
+        message: "Registration successful! We will be sending in Your QR's two days prior to the event!",
         success: true,
       });
       setFormData({
