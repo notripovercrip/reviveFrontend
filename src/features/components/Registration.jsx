@@ -72,71 +72,76 @@ export default function RegistrationForm() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  
-  if (isSubmitting) {
-    setModal({
-      show: true,
-      message: "Please wait 10 seconds before submitting again.",
-      success: false,
-    });
-    return;
-  }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  const validationErrors = validate()
-
-  setIsSubmitting(true);
-
-  try {
-    const formDataObj = new FormData();
-    formDataObj.append("name", formData.name);
-    formDataObj.append("phone", formData.phone);
-    formDataObj.append("email", formData.email);
-    formDataObj.append("fromTerna", formData.fromTerna);
-    formDataObj.append("idNumber", formData.idNumber);
-    formDataObj.append("idFile", formData.idFile);
-
-    const response = await fetch(`${BACKEND_URL}/api/register`, {
-      method: "POST",
-      body: formDataObj,
-    });
-
-    const data = await response.json();
-
-    if (response.ok) {
+    if (isSubmitting) {
       setModal({
         show: true,
-        message: "Registration successful! We will be sending in Your QR's two days prior to the event!",
-        success: true,
+        message: "Please wait 10 seconds before submitting again.",
+        success: false,
       });
-      setFormData({
-        name: "",
-        phone: "",
-        email: "",
-        fromTerna: "Terna Student",
-        idNumber: "",
-        idFile: null,
+      return;
+    }
+
+    const validationErrors = validate();
+
+    setIsSubmitting(true);
+
+    try {
+      const formDataObj = new FormData();
+      formDataObj.append("name", formData.name);
+      formDataObj.append("phone", formData.phone);
+      formDataObj.append("email", formData.email);
+      formDataObj.append("fromTerna", formData.fromTerna);
+      formDataObj.append("idNumber", formData.idNumber);
+      formDataObj.append("idFile", formData.idFile);
+
+      const response = await fetch(`${BACKEND_URL}/api/register`, {
+        method: "POST",
+        body: formDataObj,
       });
-    } else {
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setModal({
+          show: true,
+          message:
+            "Registration successful! We will be sending in Your QR's two days prior to the event!",
+          success: true,
+        });
+        setFormData({
+          name: "",
+          phone: "",
+          email: "",
+          fromTerna: "Terna Student",
+          idNumber: "",
+          idFile: null,
+        });
+      } else {
+        setModal({
+          show: true,
+          message: `Registration failed: ${
+            data.message || "Unknown server error."
+          }\n\nPlease check:\n- Name: Only letters & spaces\n- Phone: 10-digit number\n- Email: Valid email format\n- ID Number: Required\n- ID File: Max 1MB (JPG, PNG, PDF)`,
+          success: false,
+        });
+      }
+    } catch (err) {
       setModal({
         show: true,
-        message: `Registration failed: ${data.message || "Unknown server error."}\n\nPlease check:\n- Name: Only letters & spaces\n- Phone: 10-digit number\n- Email: Valid email format\n- ID Number: Required\n- ID File: Max 1MB (JPG, PNG, PDF)`,
+        message: `Something went wrong. Server Error: ${
+          err.message || "Unknown error"
+        }`,
         success: false,
       });
     }
-  } catch (err) {
-    setModal({
-      show: true,
-      message: `Something went wrong. Server Error: ${err.message || "Unknown error"}`,
-      success: false,
-    });
-  }
 
-  setTimeout(() => {
-    setIsSubmitting(false);
-  }, 10000);
-};
+    setTimeout(() => {
+      setIsSubmitting(false);
+    }, 10000);
+  };
 
   return (
     <div className="relative min-h-screen overflow-hidden flex items-center justify-center text-white px-3">
@@ -154,7 +159,24 @@ const handleSubmit = async (e) => {
             >
               {modal.success ? "Success 🎉" : "Error ⚠️"}
             </h3>
-            <p className="text-sm text-cyan-100">{modal.message}</p>
+            <p className="text-sm text-cyan-100">{modal.message} </p>
+            <p className="text-sm text-cyan-100">
+              {modal.success
+                ? `Note : Entry will only be allowed after following `
+                : "Reach out to : "}
+              <a
+                href="https://instagram.com/reviveterna"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={
+                  modal.success
+                    ? "text-cyan-400 hover:underline"
+                    : "text-pink-400"
+                }
+              >
+                reviveterna
+              </a>
+            </p>
             <button
               onClick={() => setModal({ ...modal, show: false })}
               className="mt-4 w-full py-2 bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 text-black font-semibold rounded hover:opacity-90 transition"
@@ -239,13 +261,12 @@ const handleSubmit = async (e) => {
                 value={formData.fromTerna}
                 onChange={handleChange}
                 className="mt-1 w-full p-2 bg-[#0b0f1a] border border-cyan-500 rounded"
-                >
+              >
                 <option value="Terna Student">Terna Student</option>
                 <option value="Terna Passout">Terna Passout</option>
                 <option value="Faculty">Faculty</option>
                 <option value="Outsider">Outsider</option>
               </select>
-              
             </div>
 
             <div>
