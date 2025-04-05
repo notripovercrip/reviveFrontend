@@ -46,8 +46,8 @@ export default function HomePage() {
             className="mt-6 px-6 py-3 bg-gradient-to-r from-cyan-400 to-pink-500 hover:from-pink-500 hover:to-cyan-400 text-black font-bold rounded-full transition-all duration-300 shadow-lg animate-gradient"
             style={{ fontFamily: "DM Sans, sans-serif" }}
           >
-            <Link to="/register">
-            Register
+            <Link to="/">
+            Registrations have been closed!
             </Link>
           </button>
         </section>
